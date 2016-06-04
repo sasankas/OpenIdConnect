@@ -1,0 +1,152 @@
+public class SetUserPrincipalFilter
+        implements Filter {
+
+
+    /**
+     * The <code>Log</code> instance for this class.
+     */
+    private static final Log log = LogFactory.getLog(SetUserPrincipalFilter.class);
+
+
+    //~ Instance Attributes ====================================================
+
+    /**
+     * The resource in case access is denied.
+     */
+    private String m_accessDeniedPage;
+
+
+    //~ Implemented Methods ====================================================
+
+    /**
+     * {@inheritDoc}
+     */
+    public void init(FilterConfig config)
+            throws ServletException {
+        // Cache the access denied page resource from filter init parameter
+        m_accessDeniedPage = config.getInitParameter(Constants.ACCESS_DENIED_PARAM_NAME);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+        // nothing
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain)
+            throws ServletException,
+            IOException {
+
+        if (request instanceof HttpServletRequest) {
+
+            AppContext ctx = (AppContext) Application.getInstance().getContext();
+
+            HttpServletRequest req = (HttpServletRequest) request;
+            HttpSession session = req.getSession();
+            IXenosPrincipal p = (IXenosPrincipal) session.getAttribute(Constants.USER_KEY);
+            if (p == null) {
+                // Get application context
+                // Get principal associated with request
+                Principal principal = req.getUserPrincipal();
+
+                if (log.isTraceEnabled()) {
+                    log.trace("Request user name is " + principal.getName());
+                }
+
+                if (principal != null) {
+                    try {
+                        // Create a xenos principal from the available principal
+                        if (log.isTraceEnabled()) {
+                            log.trace("creating custom principal for first time usage");
+                        }
+                        
+                        p = new UserPrincipalImpl(StringUtils.lowerCase((principal.getName())));
+
+                    } catch (XenosException e) {
+                        // Failed to create the user principal
+                        log.fatal("Failed to create the user principal", e);
+
+                        // handle authentication failure
+                        authorizationFailure(request,response);
+                        // block the request
+                        return;
+                    }
+
+                    // Bind in the session scope
+                    session.setAttribute(Constants.USER_KEY, p);
+                    if (log.isTraceEnabled()) {
+                        log.trace("custom principal bound successfully");
+                    }
+
+                    // Set session timeout
+                    Long timeout = Application.getInstance().getContext().
+                                    getEnterprise().getMaxInactivePeriodInSecs();
+                    if(timeout != null) {
+                        session.setMaxInactiveInterval(timeout.intValue());
+                    }
+
+                } else {
+                    if (log.isTraceEnabled()) {
+                        log.trace("container has not yet authenticated "
+                                  + "the identity of the user");
+                    }
+                }
+
+            }
+
+            // Set user principal in TLS storage, null value as principal is fine
+            ctx.setCallerIdentity(p);
+        }
+
+        chain.doFilter(request, response);
+    }
+
+    /**
+     * Handle authorization failure.
+     * <p/>
+     * Authorization failure means Container has already authenticated
+     * the identity of the user, but the user does not have access to this context. However,
+     * he may have access to other contexts in the same SSO cloud.
+     * <p/>
+     * This method dispatches the request to the standard "Switch Enterprise" page.
+     *
+     * @param request
+     * @param response
+     *
+     * @throws IOException
+     * @throws ServletException
+     */
+    private void authorizationFailure(ServletRequest request,
+                                      ServletResponse response)
+            throws ServletException, IOException {
+
+        // Now, this means user is authenticated by the container
+        // but he does not have access to this context (per say).
+        // Thus, we forward this request to a separate resource
+        RequestDispatcher disp
+                = request.getRequestDispatcher(m_accessDeniedPage);
+
+        if (disp != null) {
+            if (log.isTraceEnabled()) {
+                log.trace("dispatching request to enable "
+                          + "user switch enterprise");
+            }
+            disp.forward(request, response);
+        } else {
+            if (log.isTraceEnabled()) {
+                log.trace("request dispatcher is NULL, "
+                          + "request would be blocked");
+            }
+        }
+
+    }
+
+}
