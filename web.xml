@@ -1,0 +1,67 @@
+
+
+
+
+<!-- User Principal Filter Configuration -->
+    <filter>
+        <filter-name>SetUserPrincipalFilter</filter-name>
+        <display-name>Set User Principal Filter</display-name>
+        <description>
+            Filter for setting User Principal from request to Application context
+            - enforce a standard way of accessing principal
+        </description>
+
+        <filter-class>com.nri.xxxxx.startup.web.SetUserPrincipalFilter</filter-class>
+        <init-param>
+            <param-name>accessDeniedResource</param-name>
+            <param-value>/WEB-INF/modules/inf/pages/errorAccessingEnterprise.jsp</param-value>
+        </init-param>
+    </filter>
+	
+	<!-- User Principal Filter Mapping -->
+    <filter-mapping>
+        <filter-name>SetUserPrincipalFilter</filter-name>
+        <!--url-pattern>*.action</url-pattern-->
+        <servlet-name>xxxxxActionServlet</servlet-name>
+    </filter-mapping>
+	
+	
+    <!-- The Usual Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+
+    <!-- Security is active on entire directory -->
+    <security-constraint>
+        <display-name>xxxxx Server Security Constraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>xxxxx Server Protected Area</web-resource-name>
+             <!-- Define the context-relative URL(s) to be protected -->
+            <url-pattern>*.action</url-pattern>
+            <url-pattern>/report/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>PUT</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <!-- Anyone with one of the listed roles may access this area -->
+            <!-- Should have per-module/per-submodule access control here -->
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Login configuration uses form-based authentication -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>xxxxx Server Authentication Area</realm-name>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/error.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+
+    <security-role>
+        <role-name>xxxxx</role-name>
+    </security-role>
