@@ -1,0 +1,43 @@
+
+<table width="350" border="0" cellspacing="0" cellpadding="0">
+			<form method="POST" action='<%= response.encodeURL("j_security_check") %>'>
+			  <tr>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxleft"/>>&nbsp;</td>
+				<td width="110" class="E6E6E6" class="Label">&nbsp;&nbsp;&nbsp;<bean:message key="inf.login.username"/></td>
+				<td width="204" class="E6E6E6"><input type="text" name="j_username" size="25" maxlength="20" class="textbox"></td>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxright"/>>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxleft"/>>&nbsp;</td>
+				<td width="110" class="E6E6E6" class="Label">&nbsp;&nbsp;&nbsp;<bean:message key="inf.login.password"/></td>
+				<td width="204" class="E6E6E6"><input type="password" name="j_password" redisplay="false" size="25" class="textbox"></td>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxright"/>>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxleft"/>>&nbsp;</td>
+				<td width="110" class="E6E6E6" class="Label">&nbsp;</td>
+				<td width="204" class="E6E6E6" height="35">
+					<xxxxx:image property="submit" srcKey="inf.image.button.btnlogin1" srcKeyMouseOut="inf.image.button.btnlogin1" srcKeyMouseOver="inf.image.button.btnlogin2"/>
+					<xxxxx:image property="reset" srcKey="inf.image.button.btnreset1" srcKeyMouseOut="inf.image.button.btnreset1" srcKeyMouseOver="inf.image.button.btnreset2" onclick="document.forms[0].reset();return false;"/>
+				</td>
+				<td width="18" background=<xxxxx:bgimg srcKey="inf.image.boxright"/>>&nbsp;</td>
+			  </tr>
+			  <input type="hidden" name="j_security_check">
+			</form>
+			</table>
+			
+			
+			
+			<table width="350" border="0" cellspacing="0" cellpadding="0">
+			  <tr>
+				<td width="18" background="images/boxLeft.gif">&nbsp;</td>
+				<td width="314" bgcolor="#E6E6E6" class="Label">
+				Invalid username and/or password, please try <a href=''>again</a>.</td>
+				<td width="18" background="images/boxRight.gif">&nbsp;</td>
+			  </tr>
+			</table>
+		
+			
+			
+			
+			
