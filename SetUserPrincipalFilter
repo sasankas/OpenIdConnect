@@ -51,7 +51,7 @@ public class SetUserPrincipalFilter
 
             HttpServletRequest req = (HttpServletRequest) request;
             HttpSession session = req.getSession();
-            IXenosPrincipal p = (IXenosPrincipal) session.getAttribute(Constants.USER_KEY);
+            IXPrincipal p = (IXPrincipal) session.getAttribute(Constants.USER_KEY);
             if (p == null) {
                 // Get application context
                 // Get principal associated with request
@@ -63,14 +63,14 @@ public class SetUserPrincipalFilter
 
                 if (principal != null) {
                     try {
-                        // Create a xenos principal from the available principal
+                        
                         if (log.isTraceEnabled()) {
                             log.trace("creating custom principal for first time usage");
                         }
                         
                         p = new UserPrincipalImpl(StringUtils.lowerCase((principal.getName())));
 
-                    } catch (XenosException e) {
+                    } catch (XException e) {
                         // Failed to create the user principal
                         log.fatal("Failed to create the user principal", e);
 
