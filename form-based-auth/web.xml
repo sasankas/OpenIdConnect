@@ -1,0 +1,11 @@
+
+    <filter>
+        <filter-name>SetUserPrincipalFilter</filter-name>
+        <filter-class>com.security.UserLoginLogoutFilter</filter-class>
+    </filter>
+	
+	<!-- User Principal Filter Mapping -->
+    <filter-mapping>
+        <filter-name>SetUserPrincipalFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
