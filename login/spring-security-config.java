@@ -1,0 +1,15 @@
+.and()
+.sessionManagement()
+.invalidSessionUrl("/session/error/invalid")
+.sessionFixation()
+.changeSessionId()
+.maximumSessions(1)
+.expiredUrl("/session/error/expired")
+.and()
+.exceptionHandling()
+.authenticationEntryPoint()
+
+.and()
+.anonymous().disable()
+.exceptionHandling()
+.authenticationEntryPoint(new org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint("headerValue"));
